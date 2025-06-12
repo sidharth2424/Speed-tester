@@ -1,0 +1,10 @@
+📝 Summary Table
+Project	Real-World Use Case	Key Concepts
+Packet Sniffer	Troubleshooting, security monitoring	Protocols, Packet headers
+Ping Utility	Connectivity check, latency measurement	ICMP, RTT
+Port Scanner	Security auditing, service discovery	TCP handshake, sockets
+LAN Chat	Real-time messaging, offline chat	TCP, client-server, threading
+DHCP Simulator	IP management in networks	DHCP, IP allocation, subnetting
+HTTP Server	Web hosting, IoT dashboard serving	HTTP, TCP/IP
+Bandwidth Monitor	Speed tests, performance optimization	Throughput, sockets
+Traceroute	Routing diagnosis, network mapping	TTL, ICMP, path tracking

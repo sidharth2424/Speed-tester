@@ -1,0 +1,146 @@
+✅ Project 7: Bandwidth Monitor / Network Speed Tester
+🎯 Goal
+Create a script to measure:
+
+Download speed
+
+Upload speed
+
+Latency
+
+💡 Concepts Covered
+Sockets (TCP/UDP communication)
+
+Throughput calculation (bytes/sec → Mbps)
+
+Round Trip Time (RTT) measurement
+
+🛠️ Tools Needed
+Python 3
+
+socket module
+
+time module
+
+Optional: matplotlib (to plot results)
+
+🖥️ How it Works
+You’ll create a client-server model:
+
+🖧 Server:
+Listens on a port
+
+Receives upload data from the client
+
+Sends dummy data to client to simulate download
+
+💻 Client:
+Connects to server
+
+Sends upload data and times how long it takes
+
+Receives data from server and measures download speed
+
+🧱 Step-by-Step Implementation
+🖥️ Server Code (server.py)
+python
+Copy
+Edit
+import socket
+
+HOST = '0.0.0.0'  # Listen on all interfaces
+PORT = 5001       # Use a high port
+
+BUFFER_SIZE = 4096
+DATA = b'x' * BUFFER_SIZE  # Dummy data to send to client
+
+def start_server():
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind((HOST, PORT))
+        s.listen()
+        print(f"Server listening on port {PORT}")
+        conn, addr = s.accept()
+        with conn:
+            print(f"Connected by {addr}")
+            # Receiving upload data
+            while True:
+                data = conn.recv(BUFFER_SIZE)
+                if not data:
+                    break
+            print("Finished receiving upload data.")
+            
+            # Sending download data
+            for _ in range(5000):  # Total size = 5000 * 4096 bytes
+                conn.sendall(DATA)
+            print("Finished sending download data.")
+
+if __name__ == "__main__":
+    start_server()
+💻 Client Code (client.py)
+python
+Copy
+Edit
+import socket
+import time
+
+HOST = 'your.server.ip'  # Replace with actual IP or 'localhost' for testing
+PORT = 5001
+BUFFER_SIZE = 4096
+UPLOAD_SIZE_MB = 10
+UPLOAD_BYTES = UPLOAD_SIZE_MB * 1024 * 1024
+
+def test_speed():
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((HOST, PORT))
+
+        # Upload test
+        upload_data = b'x' * BUFFER_SIZE
+        start_upload = time.time()
+        sent = 0
+        while sent < UPLOAD_BYTES:
+            s.sendall(upload_data)
+            sent += len(upload_data)
+        s.shutdown(socket.SHUT_WR)
+        end_upload = time.time()
+        upload_duration = end_upload - start_upload
+        upload_speed = (UPLOAD_BYTES * 8) / (upload_duration * 1_000_000)  # Mbps
+
+        print(f"Upload Speed: {upload_speed:.2f} Mbps")
+
+        # Download test
+        start_download = time.time()
+        received = 0
+        while True:
+            data = s.recv(BUFFER_SIZE)
+            if not data:
+                break
+            received += len(data)
+        end_download = time.time()
+        download_duration = end_download - start_download
+        download_speed = (received * 8) / (download_duration * 1_000_000)  # Mbps
+
+        print(f"Download Speed: {download_speed:.2f} Mbps")
+
+if __name__ == "__main__":
+    test_speed()
+✅ Output Example
+yaml
+Copy
+Edit
+Upload Speed: 8.23 Mbps
+Download Speed: 15.47 Mbps
+📌 Optional Enhancements
+Add latency (ping) measurement
+
+Use matplotlib to plot a speed graph
+
+Add GUI using Tkinter or PyQt
+
+Convert to UDP mode for learning differences
+
+💬 Real-World Application
+Similar to how Speedtest.net works
+
+Used by ISPs, gamers, streamers to check internet quality
+
+Network administrators use it to diagnose slow connections
